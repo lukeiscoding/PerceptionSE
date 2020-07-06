@@ -1,2 +1,2 @@
-# perceptionSE
-Speech Enhancement Using Computer Perception
+# PerceptionSE
+Speech enhancement with perception loss.
