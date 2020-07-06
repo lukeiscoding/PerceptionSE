@@ -1,0 +1,7 @@
+*__pycache__*
+*data/*
+*Properties*
+*SpeechVGG_pretrained*
+*LibriSpeechWords*
+*.ipynb_checkpoints*
+*.h5*
