@@ -11,6 +11,8 @@ import soundfile as sf
 from scipy.signal import stft
 from glob import glob
 from argparse import ArgumentParser
+from libs.data_generator import log_standardize, pad_spec
+import matplotlib.pyplot as plt
 
 
 def audio_to_input(audio_file):
@@ -27,20 +29,15 @@ def audio_to_input(audio_file):
     data_tmp= np.delete(data_tmp, (128), axis=1)
     return data_tmp
 
-def clips_to_features_rand(clips, model, num_random_patches=1):
+def clips_to_specs(clips, num_random_patches=1):
+    clips = remove_short_clips(clips)
     specs = []
     for clip in clips:
         for n in range(num_random_patches):
-            specs.append(audio_to_input(clip, 16200))
+            specs.append(audio_to_input(clip))
     #specs = np.array([pad_spec(spec) for spec in specs])
     specs = np.array([spec for spec in specs])
-    feats = model.predict(specs)
-    a, b, c, d = np.shape(feats)
-    feats_small = np.zeros((len(clips), b, c, d))
-    for i in range(0, len(feats), num_random_patches):
-        feat_tmp = np.mean(feats[i:i+num_random_patches], axis=0)
-        feats_small[int(i/num_random_patches), ...] = feat_tmp
-    return feats_small.reshape(len(clips), -1)
+    return specs
 
 def remove_short_clips(clips, length=16200):
     good_idxs = []
@@ -49,7 +46,7 @@ def remove_short_clips(clips, length=16200):
         audio = audio[0]
         if len(audio)>=length:
             good_idxs.append(i)
-    clips=np.array(noise_clips)[good_idxs]
+    clips=np.array(clips)[good_idxs]
     return clips
 
 	
@@ -78,17 +75,19 @@ if __name__ == '__main__':
     test_SSN_0 = glob(data_path + "testSSN/*0.wav")
     dev_SSN_0 = glob(data_path + "devSSN/*0.wav")
     train_SSN_0 = glob(data_path + "trainSSN/*0.wav")
-    for tests in test_clean:
-        audio = sf.read(tests)
-        audio = audio[0]
-        f, t, seg_stft = stft(audio,
-                              window='hamming',
-                              nperseg=256,
-                              noverlap=128)
-        print(seg_stft)
-        mag_spec = np.abs(seg_stft)
-        print(mag_spec)
-        break
+    # for tests in test_SSN_3:
+    #     audio = sf.read(tests)
+    #     audio = audio[0]
+    #     f, t, seg_stft = stft(audio,
+    #                           window='hamming',
+    #                           nperseg=256,
+    #                           noverlap=128)
+    #     mag_spec = np.abs(seg_stft)
+    #     plt.imshow(mag_spec)
+    #     plt.show()
+    #     break
+    specs_test_clean = clips_to_specs(test_clean)
+    print(specs_test_clean[0])
 
 
 
