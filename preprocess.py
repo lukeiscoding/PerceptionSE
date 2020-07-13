@@ -11,7 +11,7 @@ import soundfile as sf
 from scipy.signal import stft
 from glob import glob
 from argparse import ArgumentParser
-from libs.data_generator import log_standardize, pad_spec
+# from libs.data_generator import log_standardize, pad_spec
 import matplotlib.pyplot as plt
 
 
@@ -25,7 +25,7 @@ def audio_to_input(audio_file):
     mag_spec = np.abs(seg_stft)
     spec_tmp = np.swapaxes(mag_spec, 0, 1)
     data_tmp = spec_tmp[..., np.newaxis]
-    data_tmp[:,:,0] = log_standardize(data_tmp[:,:,0])
+    # data_tmp[:,:,0] = log_standardize(data_tmp[:,:,0])
     data_tmp= np.delete(data_tmp, (128), axis=1)
     return data_tmp
 
@@ -88,7 +88,9 @@ if __name__ == '__main__':
     #     break
     specs_test_clean = clips_to_specs(test_clean)
     print(specs_test_clean[0])
-
+    print(specs_test_clean[0][:,:,0].shape)
+    plt.imshow(specs_test_clean[0][:,:,0])
+    plt.show()
 
 
     # splits
