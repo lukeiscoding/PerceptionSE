@@ -1,6 +1,7 @@
-from models import TFU_model
+from models import *
 
 if __name__ == '__main__':
-    model = TFU_model.TFU_model()
+    model_name = TFU_model_2
+    model = model_name.model()
     model.summary()
     print("hello world")
