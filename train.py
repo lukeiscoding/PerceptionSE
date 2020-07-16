@@ -17,10 +17,14 @@ if __name__ == '__main__':
     model.load_weights('./checkpoints/my_checkpoint')
     for epoch in range(10):
         for n, file in enumerate(test_ssn_3):
-            history = model.fit(
-                test_ssn_3[n], test_clean[n],
-                epochs=1)
             if n % 100 == 0:
+                history = model.fit(
+                    test_ssn_3[n], test_clean[n],
+                    epochs=1)
                 print("n = ", n, "; epoch = ", epoch)
                 model.save_weights('./checkpoints/my_checkpoint')
+            else:
+                history = model.fit(
+                    test_ssn_3[n], test_clean[n],
+                    epochs=1, verbose=0)
 
