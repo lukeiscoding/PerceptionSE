@@ -31,6 +31,7 @@ def audio_to_input(audio_file):
     a = np.int(np.ceil(a))
     padded = np.zeros((a*128, 128, 1))
     padded[:data_tmp.shape[0], :data_tmp.shape[1], :data_tmp.shape[2]] = data_tmp
+    padded = padded.reshape((-1, 128, 128, 1))
     return padded
 
 def clips_to_specs(clips, num_random_patches=1):
@@ -63,36 +64,51 @@ def parse_args():
         help='dataset to load'
     )
 
+    parser.add_argument(
+        '-dest', '--dest',
+        type=str, default='./data/LibriSpeechProcessed/',
+        help='destination'
+    )
+
     return parser.parse_args()
 
 # Run script
 if __name__ == '__main__':
     # Parse command-line arguments
     args = parse_args()
-    data_path = args.__getattribute__("data")
-    test_clean = glob(data_path + "test-clean/*/*/*.flac")
-    dev_clean = glob(data_path + "dev-clean/*/*/*.flac")
-    train_clean = glob(data_path + "train-clean-100/*/*/*.flac")
-    test_SSN_3 = glob(data_path + "testSSN/*3.wav")
-    dev_SSN_3 = glob(data_path + "devSSN/*3.wav")
-    train_SSN_3 = glob(data_path + "trainSSN/*3.wav")
-    test_SSN_0 = glob(data_path + "testSSN/*0.wav")
-    dev_SSN_0 = glob(data_path + "devSSN/*0.wav")
-    train_SSN_0 = glob(data_path + "trainSSN/*0.wav")
-    # for tests in test_SSN_3:
-    #     audio = sf.read(tests)
-    #     audio = audio[0]
-    #     f, t, seg_stft = stft(audio,
-    #                           window='hamming',
-    #                           nperseg=256,
-    #                           noverlap=128)
-    #     mag_spec = np.abs(seg_stft)
-    #     plt.imshow(mag_spec)
-    #     plt.show()
-    #     break
-    specs_test_clean = clips_to_specs(test_clean)
-    print(specs_test_clean[0].shape)
+    data_path = args.data
+    test_clean = sorted(glob(data_path + "test-clean/*/*/*.flac"))
+    dev_clean = sorted(glob(data_path + "dev-clean/*/*/*.flac"))
+    train_clean = sorted(glob(data_path + "train-clean-100/*/*/*.flac"))
+    test_SSN_3 = sorted(glob(data_path + "testSSN/*3.wav"))
+    dev_SSN_3 = sorted(glob(data_path + "devSSN/*3.wav"))
+    train_SSN_3 = sorted(glob(data_path + "trainSSN/*3.wav"))
+    test_SSN_0 = sorted(glob(data_path + "testSSN/*0.wav"))
+    dev_SSN_0 = sorted(glob(data_path + "devSSN/*0.wav"))
+    train_SSN_0 = sorted(glob(data_path + "trainSSN/*0.wav"))
 
+    specs_test_clean = clips_to_specs(test_clean)
+    np.save(args.dest + 'test_clean', specs_test_clean)
+    specs_dev_clean = clips_to_specs(dev_clean)
+    np.save(args.dest + 'dev_clean', specs_dev_clean)
+    specs_train_clean = clips_to_specs(train_clean)
+    np.save(args.dest + 'train_clean', specs_train_clean)
+    specs_test_SSN_3 = clips_to_specs(test_SSN_3)
+    np.save(args.dest + 'test_SSN_3', specs_test_SSN_3)
+    specs_train_SSN_3 = clips_to_specs(train_SSN_3)
+    np.save(args.dest + 'train_SSN_3', specs_train_SSN_3)
+    specs_dev_SSN_3 = clips_to_specs(dev_SSN_3)
+    np.save(args.dest + 'dev_SSN_3', specs_dev_SSN_3)
+    specs_test_SSN_0 = clips_to_specs(test_SSN_0)
+    np.save(args.dest + 'test_SSN_0', specs_test_SSN_0)
+    specs_dev_SSN_0 = clips_to_specs(dev_SSN_0)
+    np.save(args.dest + 'dev_SSN_0', specs_dev_SSN_0)
+    specs_train_SSN_0 = clips_to_specs(train_SSN_0)
+    np.save(args.dest + 'train_SSN_0', specs_train_SSN_0)
+
+    # file_get = glob(args.dest + "*.npy")
+    # savedfile = np.load(file_get[0], allow_pickle=True)
+    # print(savedfile[0].shape)
 
     # splits
     print("Hello!")
