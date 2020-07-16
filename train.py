@@ -15,13 +15,13 @@ if __name__ == '__main__':
     test_ssn_3 = np.load(test_ssn_3, allow_pickle=True)
     test_clean = np.load(test_clean, allow_pickle=True)
     model.load_weights('./checkpoints/my_checkpoint')
-    for epoch in range(10):
+    for epoch in range(500):
         for n, file in enumerate(test_ssn_3):
-            if n % 100 == 0:
+            if n % 2000 == 0:
                 history = model.fit(
                     test_ssn_3[n], test_clean[n],
                     epochs=1)
-                print("n = ", n, "; epoch = ", epoch)
+                print("n = ", n, "; epoch = ", epoch+1)
                 model.save_weights('./checkpoints/my_checkpoint')
             else:
                 history = model.fit(
