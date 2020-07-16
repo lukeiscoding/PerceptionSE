@@ -14,6 +14,7 @@ if __name__ == '__main__':
     # dev_clean = np.load(dev_clean, allow_pickle=True)
     test_ssn_3 = np.load(test_ssn_3, allow_pickle=True)
     test_clean = np.load(test_clean, allow_pickle=True)
+    model.load_weights('./checkpoints/my_checkpoint')
     for epoch in range(10):
         for n, file in enumerate(test_ssn_3):
             history = model.fit(
