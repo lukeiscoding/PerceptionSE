@@ -27,7 +27,11 @@ def audio_to_input(audio_file):
     data_tmp = spec_tmp[..., np.newaxis]
     # data_tmp[:,:,0] = log_standardize(data_tmp[:,:,0])
     data_tmp= np.delete(data_tmp, (128), axis=1)
-    return data_tmp
+    a = data_tmp.shape[0]/128
+    a = np.int(np.ceil(a))
+    padded = np.zeros((a*128, 128, 1))
+    padded[:data_tmp.shape[0], :data_tmp.shape[1], :data_tmp.shape[2]] = data_tmp
+    return padded
 
 def clips_to_specs(clips, num_random_patches=1):
     clips = remove_short_clips(clips)
@@ -87,10 +91,7 @@ if __name__ == '__main__':
     #     plt.show()
     #     break
     specs_test_clean = clips_to_specs(test_clean)
-    print(specs_test_clean[0])
-    print(specs_test_clean[0][:,:,0].shape)
-    plt.imshow(specs_test_clean[0][:,:,0])
-    plt.show()
+    print(specs_test_clean[0].shape)
 
 
     # splits
