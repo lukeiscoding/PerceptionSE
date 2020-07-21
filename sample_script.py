@@ -1,7 +1,8 @@
 from models import *
 import numpy as np
 from glob import glob
-
+import soundfile as sf
+from scipy.signal import istft
 if __name__ == '__main__':
     model_name = TFU_model_2
     model = model_name.model()
@@ -17,4 +18,10 @@ if __name__ == '__main__':
     model.load_weights('./checkpoints/my_checkpoint')
 
     prediction = model.predict(test_ssn_3[0])
-    print(prediction.shape)
+    prediction = prediction.reshape((-1, 128, 1))
+    padded = np.zeros((prediction.shape[0], 129, 1))
+    padded[:, :128, 1] = prediction
+    squeeze = np.squeeze(padded)
+    swap = np.swapaxes(squeeze, 0, 1)
+    t, prediction = istft(swap)
+    print(prediction)
