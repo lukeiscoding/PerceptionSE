@@ -50,6 +50,41 @@ for file in clean_files:
 print('average mse=', mse.sum() / len(mse))
 
 
+# test for mag only, hann, using
+import librosa
+import matplotlib.pyplot as plt
+print("mag only, hann, using griffin-lim")
+mse = np.array([])
+for file in clean_files:
+    audio, _s = sf.read(file)
+    audio = np.asarray(audio)
+    Zxx2 = librosa.stft(audio, window='hann')
+    # print(Zxx2.shape)
+    Mag = np.abs(Zxx2)
+    audio_recovered = librosa.core.griffinlim(Mag, window="hann", length=audio.shape[0])
+    mse = np.append(mse, mean_squared_error(audio, audio_recovered))
+    # print(file, 'error=', mse[-1])
+    sf.write(file+'_mag_only_hann_gla.wav', audio_recovered, _s)
+print('average mse=', mse.sum() / len(mse))
+
+# test for mag only, hann, using
+import librosa
+import matplotlib.pyplot as plt
+print("mag only, hann, using griffin-lim svgg small hop")
+mse = np.array([])
+for file in clean_files:
+    audio, _s = sf.read(file)
+    audio = np.asarray(audio)
+    Zxx2 = librosa.stft(audio, window='hann', n_fft=1024, win_length=256, hop_length=128)
+    # print(Zxx2.shape)
+    Mag = np.abs(Zxx2)
+    audio_recovered = librosa.core.griffinlim(Mag, window="hann", length=audio.shape[0], win_length=256, hop_length=128)
+    mse = np.append(mse, mean_squared_error(audio, audio_recovered))
+    # print(file, 'error=', mse[-1])
+    sf.write(file+'_mag_only_hann_gla_svgg_small_hop.wav', audio_recovered, _s)
+print('average mse=', mse.sum() / len(mse))
+
+
 
 # test for mag only, hamming, using griffin-lim
 import librosa
