@@ -6,6 +6,8 @@ from sklearn.metrics import mean_squared_error
 
 clean_files = sorted(glob('stft_test_file/*.flac'))
 
+
+
 # test for stft and istft
 print("full complex number")
 mse = np.array([])
@@ -16,6 +18,14 @@ for file in clean_files:
     _t, _f, Zxx = stft(audio, window='hamming', nperseg=256, noverlap=128, padded=True)
     # print("shape after stft =", Zxx.shape,"total: ",Zxx.shape[0],"*",Zxx.shape[1],"=",Zxx.shape[0]*Zxx.shape[1])
     _t, audio_recovered = istft(Zxx, window='hamming', nperseg=256, noverlap=128)
+    mag_only = np.abs(Zxx)
+    _t, audio_mag_only_recoverd = istft(mag_only, window='hamming', nperseg=256, noverlap=128)
+    _t, _f, Zxx_mag = stft(audio_mag_only_recoverd, window='hamming', nperseg=256, noverlap=128, padded=True)
+
+    _t, audio_recovered = istft(Zxx, window='hamming', nperseg=256, noverlap=128)
+    print(Zxx_mag)
+    print(mag_only)
+    print(audio_mag_only_recoverd)
     audio_recovered = np.asarray(audio_recovered[:len(audio)])
     mse = np.append(mse, mean_squared_error(audio, audio_recovered))
     print(file, "lossless", 'error=', mse[-1])
